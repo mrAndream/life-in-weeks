@@ -1,0 +1,1388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>My Life in Weeks</title>
+    <link rel="icon" type="image/svg+xml"
+          href="data:image/svg+xml,%3C!-- Half-Red Half-Empty Heart Favicon --%3E%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3C!-- White circle background --%3E%3Ccircle cx='32' cy='32' r='32' fill='%23ffffff'/%3E%3C!-- Define a linear gradient for half red and half transparent fill --%3E%3Cdefs%3E%3ClinearGradient id='halfGradient' x1='0%25' y1='0%25' x2='100%25' y2='0%25'%3E%3Cstop offset='50%25' stop-color='red'/%3E%3Cstop offset='50%25' stop-color='transparent'/%3E%3C/linearGradient%3E%3C/defs%3E%3C!-- Heart shape with red stroke and half filled --%3E%3Cpath d='M32 58s26-15.9 26-29.5S43.1 5 32 17.5 6 28.5 6 28.5 5.5 38 32 58z' fill='url(%23halfGradient)' stroke='red' stroke-width='2'/%3E%3C/svg%3E%0A" />
+    <style>
+        /* Version 1.2.4 (v1.2.4) - Embedded CSS */
+        
+        /* Basic Reset */
+        * {
+          box-sizing: border-box;
+          margin: 0;
+          padding: 0;
+        }
+        
+        body {
+          font-family: Arial, sans-serif;
+          background-color: #f5f5f5;
+          padding: 20px;
+        }
+        
+        .form-container {
+          max-width: 900px;
+          margin: 0 auto;
+          background-color: #fff;
+          padding: 30px 40px;
+          border-radius: 8px;
+          box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+          text-align: center;
+          margin-bottom: 25px;
+          color: #333;
+        }
+        
+        form {
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+          margin-bottom: 40px;
+        }
+        
+        .input-group {
+          display: flex;
+          flex-direction: column;
+        }
+        
+        label {
+          margin-bottom: 8px;
+          color: #555;
+          font-weight: bold;
+        }
+        
+        input[type="text"],
+        input[type="date"],
+        input[type="number"],
+        select,
+        textarea {
+          padding: 12px;
+          border: 1px solid #ccc;
+          border-radius: 6px;
+          font-size: 16px;
+          transition: border-color 0.3s ease;
+        }
+        
+        input[type="text"]:focus,
+        input[type="date"]:focus,
+        input[type="number"]:focus,
+        select:focus,
+        textarea:focus {
+          border-color: #4caf50;
+          outline: none;
+        }
+        
+        .error-message {
+          color: red;
+          font-size: 14px;
+          margin-top: 5px;
+          height: 18px; /* To maintain space even when empty */
+        }
+        
+        .button-group {
+          display: flex;
+          gap: 15px;
+          justify-content: center;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+        }
+         .checkbox-group input[type="checkbox"] {
+            position: relative;
+            top: -5px;
+          }
+        
+        button {
+          padding: 12px 25px;
+          font-size: 16px;
+          border: none;
+          border-radius: 6px;
+          cursor: pointer;
+          transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        
+        #generateButton {
+          background-color: #4caf50;
+          color: #fff;
+        }
+        
+        #generateButton:hover {
+          background-color: #45a049;
+          transform: translateY(-2px);
+        }
+        
+        #exportSvgButton {
+          background-color: #2196f3;
+          color: #fff;
+        }
+        
+        #exportSvgButton:hover {
+          background-color: #1e88e5;
+          transform: translateY(-2px);
+        }
+
+        #exportJpgButton {
+          background-color: #ff9800; /* Orange color for JPG */
+          color: #fff;
+        }
+
+        #exportJpgButton:hover {
+          background-color: #f57c00;
+          transform: translateY(-2px);
+        }
+        
+        /* SVG Styles */
+        #lifeWeeksChart {
+          width: 100%;
+          height: auto;
+          border: 1px solid #ddd;
+          border-radius: 6px;
+          overflow: visible;
+        }
+        
+        circle, rect, path {
+          transition: fill 0.3s, transform 0.3s;
+          transform-box: fill-box;      /* Ensures transform-origin is based on the shape's bounding box */
+          transform-origin: center;     /* Sets the origin point for transformations to the center */
+        }
+        
+        circle:hover, rect:hover/*, path:hover*/ {
+          fill: #555;
+          cursor: pointer;
+          transform: scale(1.2);
+        }
+        
+        text {
+          font-size: 12px;
+          fill: #333;
+          pointer-events: none; /* Prevent text from capturing hover events */
+        }
+        
+        /* Tooltip Styles (Optional) */
+        .tooltip {
+          position: absolute;
+          background-color: rgba(0, 0, 0, 0.7);
+          color: #fff;
+          padding: 6px 10px;
+          border-radius: 4px;
+          font-size: 14px;
+          pointer-events: none;
+          opacity: 0;
+          transition: opacity 0.3s ease;
+          z-index: 10;
+        }
+        
+        /* Notification Styles */
+        .notification {
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          background-color: #4caf50; /* Default: Green for success */
+          color: white;
+          padding: 15px 20px;
+          border-radius: 5px;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+          opacity: 0;
+          transition: opacity 0.5s ease, transform 0.5s ease;
+          transform: translateY(-20px);
+          z-index: 1000;
+        }
+
+        .notification.show {
+          opacity: 1;
+          transform: translateY(0);
+        }
+
+        .notification.error {
+          background-color: #f44336; /* Red for errors */
+        }
+
+        /* Modal Styles */
+         .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.6);
+         }
+        
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto; /* Adjust top margin */
+            padding: 20px;
+            border: 1px solid #888;
+             width: 80%;
+             max-width: 600px; /* Maximum width */
+            border-radius: 8px;
+        }
+    
+        .modal-content h2 {
+          margin-bottom: 20px;
+          text-align: center;
+        }
+    
+        .modal-content label {
+            margin-bottom: 5px;
+            display: block;
+        }
+    
+       .modal-content select {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+           box-sizing: border-box;
+        }
+        
+        .modal-content .button-group {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .modal-content button {
+            padding: 10px 20px;
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .modal-content button:hover {
+            background-color: #4cae4c;
+        }
+        
+        .modal-content .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .modal-content .close:hover,
+        .modal-content .close:focus {
+            color: black;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="form-container">
+        <h1>My Life in Weeks</h1>
+        <form id="lifeWeeksForm">
+            <!-- Name Input Group -->
+            <div class="input-group">
+                <label for="nameField">Name</label>
+                <input type="text" id="nameField" name="name" placeholder="Your Name" required>
+                <div class="error-message" id="nameError"></div>
+            </div>
+
+            <!-- Date of Birth Input Group -->
+            <div class="input-group">
+                <label for="dobField">Date of Birth</label>
+                <input type="date" id="dobField" name="dob" required>
+                <div class="error-message" id="dobError"></div>
+            </div>
+
+            <!-- Sex Input Group -->
+            <div class="input-group">
+                <label for="sexField">Sex</label>
+                <select id="sexField" name="sex" required>
+                    <!-- Removed "Select" option and set "Male" as default -->
+                    <option value="male" selected>Male</option>
+                    <option value="female">Female</option>
+                </select>
+                <div class="error-message" id="sexError"></div>
+            </div>
+
+            <!-- Lifespan Input Group -->
+            <div class="input-group">
+                <label for="lifespanField">Expect to Live Years</label>
+                <input 
+                    type="number"
+                    id="lifespanField"
+                    name="lifespan"
+                    min="1"
+                    max="120"
+                    placeholder="(Optional)"
+                />
+                <div class="error-message" id="lifespanError"></div>
+            </div>
+
+            <!-- Shape Selection Input Group -->
+            <div class="input-group">
+                <label for="shapeField">Shape</label>
+                <select id="shapeField" name="shape">
+                    <option value="circle">Circle</option>
+                    <option value="square">Square</option>
+                    <option value="heart">Heart</option>
+                 </select>
+                <div class="error-message" id="shapeError"></div>
+            </div>
+
+             <!-- Custom Day Checkmark Input Group -->
+            <div class="checkbox-group">
+                <input type="checkbox" id="customDayCheck" name="customDayCheck">
+                <label for="customDayCheck">Select a presentation date?</label>
+                <input type="date" id="customDayField" name="customDay" style="visibility: hidden;">
+                <div class="error-message" id="customDayError"></div>
+            </div>
+
+            <!-- Custom Bottom Text Input Group -->
+            <div class="checkbox-group">
+                <input type="checkbox" id="customTextCheck" name="customTextCheck">
+                <label for="customTextCheck">Use custom bottom text?</label>
+            </div>
+            <div class="input-group" id="customTextInputGroup" style="display: none;">
+                <label for="customTextField">Custom Bottom Text</label>
+                <textarea id="customTextField" name="customTextField" placeholder="Enter your custom text (max 3 lines)" rows="3" maxlength="225"></textarea>
+                <div class="error-message" id="customTextError"></div>
+                <span id="customTextCount">0/225 characters</span>
+            </div>
+
+            <!-- Life Stage Color Coding Checkbox -->
+            <div class="checkbox-group">
+                <input type="checkbox" id="lifeStageColoring" name="lifeStageColoring">
+                <label for="lifeStageColoring">Color-code life stages?</label>
+            </div>
+
+            <!-- Button Group -->
+            <div class="button-group">
+                <button type="submit" id="generateButton">Generate</button>
+                 <button type="button" id="exportJpgButton">Export to JPG</button>
+                <button type="button" id="exportSvgButton">Export to SVG</button>
+            </div>
+        </form>
+
+        <!-- SVG Chart -->
+        <div id="chartContainer" style="display: none;">
+            <!-- The generated SVG will be placed here -->
+        </div>
+    </div>
+
+    <!-- Tooltip (Optional) -->
+    <div class="tooltip" id="tooltip">Tooltip Text</div>
+    
+    <!-- Notification Message -->
+    <div id="notification" class="notification"></div>
+
+     <!-- Modal for JPG Export Settings -->
+    <div id="exportModal" class="modal">
+        <div class="modal-content">
+            <span class="close">×</span>
+            <h2>Select Print Format</h2>
+
+            <label for="printFormat">Print Format</label>
+              <select id="printFormat">
+                  <option value="11x17">11 x 17 inches</option>
+                  <option value="18x24">18 x 24 inches</option>
+                  <option value="24x36">24 x 36 inches</option>
+                  <option value="27x40">27 x 40 inches</option>
+              </select>
+
+            <div class="button-group">
+              <button type="button" id="modalCancelButton">Cancel</button>
+              <button type="button" id="modalExportButton">Export</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript for Interactivity -->
+    <script>
+       /***************************************************************
+        * has53Weeks
+        ***************************************************************/
+      function has53Weeks(year) {
+          const startOfYear = new Date(year, 0, 1);
+          const day = startOfYear.getDay();
+          const isLeap = new Date(year, 1, 29).getMonth() === 1;
+          if (!isLeap && day === 4) return true;        // non-leap, starts Thu => 53
+          if (isLeap && (day === 3 || day === 4)) return true; // leap, starts Wed/Thu => 53
+          return false;
+      }
+
+        /***************************************************************
+         * getWeeksBetween
+         ***************************************************************/
+      function getWeeksBetween(dateA, dateB) {
+          const msPerWeek = 7 * 24 * 60 * 60 * 1000;
+          return Math.floor((dateB - dateA) / msPerWeek);
+      }
+
+       /***************************************************************
+        * getTargetYears
+        ***************************************************************/
+      function getTargetYears(sex, customVal) {
+          if (!isNaN(customVal) && customVal >= 1 && customVal <= 120) {
+              return customVal;
+          }
+          let base = 78;
+          if (sex === "male") base = 74;
+          if (sex === "female") base = 80;
+          return base + 7; // Consider removing '+7' if not intended
+      }
+
+      /***************************************************************
+        * parseLocalDate
+        ***************************************************************/
+      function parseLocalDate(dateStr) {
+          const parts = dateStr.split("-");
+          if (parts.length !== 3) return null;
+          const y = parseInt(parts[0], 10);
+          const m = parseInt(parts[1], 10) - 1;
+          const d = parseInt(parts[2], 10);
+          if (isNaN(y) || isNaN(m) || isNaN(d)) return null;
+          return new Date(y, m, d);
+      }
+
+      /***************************************************************
+       * showNotification
+       ***************************************************************/
+      function showNotification(message, type = 'success') {
+          const notification = document.getElementById('notification');
+          notification.textContent = message;
+          
+          // Remove existing classes
+          notification.classList.remove('show', 'error');
+          
+          // Add type-specific class
+          if (type === 'error') {
+              notification.classList.add('error');
+          }
+          
+          // Trigger reflow to restart the animation
+          void notification.offsetWidth;
+          
+          // Show the notification
+          notification.classList.add('show');
+          
+          // Hide after 3 seconds
+          setTimeout(() => {
+              notification.classList.remove('show');
+          }, 3000);
+      }
+      /***************************************************************
+       * calculateTextLines
+       ***************************************************************/
+    function calculateTextLines(text, maxWidth) {
+        const testElement = document.createElement('span');
+        testElement.style.visibility = 'hidden';
+        testElement.style.position = 'absolute';
+        testElement.style.whiteSpace = 'nowrap';
+        testElement.style.fontFamily = getComputedStyle(document.body).fontFamily;
+        testElement.style.fontSize = getComputedStyle(document.querySelector("#bottomText")).fontSize;
+        document.body.appendChild(testElement);
+        testElement.textContent = text;
+        let textWidth = testElement.offsetWidth;
+        document.body.removeChild(testElement);
+
+        const averageCharWidth = textWidth / text.length;
+        const charsPerLine = maxWidth / averageCharWidth;
+        
+        const words = text.split(/\s+/);
+        let lines = 1;
+        let currentLine = '';
+
+        for(const word of words) {
+            const testLine = currentLine ? currentLine + " " + word : word;
+            testElement.textContent = testLine;
+            let lineLen = testElement.offsetWidth;
+            if(lineLen > maxWidth) {
+                lines++;
+                currentLine = word;
+            } else {
+                currentLine = testLine;
+            }
+        }
+        return lines;
+    }
+
+     /***************************************************************
+       * autoLineBreak
+       ***************************************************************/
+      function autoLineBreak(text, maxLength) {
+        let result = "";
+        for (let i = 0; i < text.length; i++) {
+          result += text[i];
+          if ((i + 1) % 75 === 0 && i !== text.length - 1) {
+            result += "\n";
+          }
+        }
+        return result;
+      }
+
+      /***************************************************************
+       * generateSvgChart
+       ***************************************************************/
+      function generateSvgChart(event) {
+        event.preventDefault(); // Prevent form submission
+          try {
+              console.log("Generate button clicked.");
+              
+              const name = document.getElementById("nameField").value.trim();
+              console.log("Name:", name);
+              
+              const dobVal = document.getElementById("dobField").value;
+              console.log("DOB Value:", dobVal);
+              
+              const sex = document.getElementById("sexField").value;
+              console.log("Sex:", sex);
+              
+              const lifespanField = document.getElementById("lifespanField").value;
+              const customVal = lifespanField ? parseInt(lifespanField) : NaN;
+              console.log("Custom Lifespan:", customVal);
+              
+              const shapeVal = document.getElementById("shapeField").value; // "circle", "square", "heart"
+              console.log("Shape:", shapeVal);
+
+              const customDayCheck = document.getElementById("customDayCheck").checked;
+              const customDayVal = document.getElementById("customDayField").value;
+              console.log("Custom Day:", customDayCheck ? customDayVal : "Not set");
+
+              const customTextCheck = document.getElementById("customTextCheck").checked;
+              const customTextField = document.getElementById("customTextField").value.trim();
+              console.log("Custom Text:", customTextCheck ? customTextField : "Not set");
+
+
+              const lifeStageColoring = document.getElementById("lifeStageColoring").checked;
+              console.log("Life Stage Coloring:", lifeStageColoring);
+
+
+              // Clear previous error messages
+              document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+
+              let hasError = false;
+
+              if (!name) {
+                  document.getElementById("nameError").textContent = "Name is required.";
+                  hasError = true;
+              }
+              if (!dobVal) {
+                  document.getElementById("dobError").textContent = "Date of Birth is required.";
+                  hasError = true;
+              }
+              if (!sex) {
+                  document.getElementById("sexError").textContent = "Sex is required.";
+                  hasError = true;
+              }
+              if (!isNaN(customVal) && (customVal < 1 || customVal > 120)) {
+                  document.getElementById("lifespanError").textContent = "Lifespan must be between 1 and 120.";
+                  hasError = true;
+              }
+              if (customDayCheck && !customDayVal) {
+                document.getElementById("customDayError").textContent = "Custom Day is required if checked.";
+                hasError = true;
+              }
+              if(customTextCheck && customTextField.length > 225) {
+                  document.getElementById("customTextError").textContent = "Custom text must be 225 characters or less.";
+                  hasError = true;
+              }
+
+              if (hasError) {
+                  console.log("Validation failed.");
+                  showNotification("Please correct the errors in the form.", "error");
+                  return;
+              }
+
+              const dob = parseLocalDate(dobVal);
+              if (!dob || isNaN(dob.getTime())) {
+                  alert("Invalid date format.");
+                  console.log("Invalid DOB.");
+                  showNotification("Invalid Date of Birth format.", "error");
+                  return;
+              }
+
+              const chartDiv = document.getElementById("chartContainer");
+              chartDiv.style.display = "block";  // show container
+
+              // total years
+              const maxYears = getTargetYears(sex, customVal);
+              console.log("Max Years:", maxYears);
+
+               // filled weeks
+              let now = new Date();
+              let presentationDate = null;
+                if (customDayCheck) {
+                  presentationDate = parseLocalDate(customDayVal);
+                  if (!presentationDate || isNaN(presentationDate.getTime())) {
+                      alert("Invalid presentation date format.");
+                      console.log("Invalid Presentation Date.");
+                      showNotification("Invalid Presentation Date format.", "error");
+                      return;
+                  }
+                  if(presentationDate < dob){
+                    alert("Invalid presentation date. It cannot be before DoB");
+                    console.log("Invalid presentation Date.");
+                    showNotification("Invalid Presentation Date. It cannot be before DoB.", "error");
+                      return;
+                   }
+                    now = presentationDate;
+                }
+
+              let filledWeeks = getWeeksBetween(dob, now) + 1;
+              if (filledWeeks < 0) filledWeeks = 0;
+              console.log("Filled Weeks:", filledWeeks);
+
+              // offset from Jan1(birthYear) to DOB
+              const birthYear = dob.getFullYear();
+              const jan1BirthYear = new Date(birthYear, 0, 1);
+              let birthOffset = getWeeksBetween(jan1BirthYear, dob);
+              if (birthOffset < 0) birthOffset = 0;
+              console.log("Birth Offset Weeks:", birthOffset);
+
+              // men/women life expectancy
+              let baseLife = 78;
+              if (sex === "male") baseLife = 74;
+              if (sex === "female") baseLife = 80;
+              const finalYears = (!isNaN(customVal) && customVal >= 1 && customVal <= 120)
+                  ? customVal
+                  : baseLife;
+              const finalWeeksApprox = finalYears * 52;
+              let weeksLeft = finalWeeksApprox - filledWeeks;
+              if (weeksLeft < 0) weeksLeft = 0;
+              const usedPct = Math.min(100, (filledWeeks / finalWeeksApprox)*100).toFixed(1);
+                let todayStr = now.toLocaleDateString();
+
+              let lifeNote = (sex === "male")
+                  ? `Your life expectancy as a male in the US is about ${baseLife} years.`
+                  : `Your life expectancy as a female in the US is about ${baseLife} years.`;
+              if (!isNaN(customVal) && customVal >= 1 && customVal <= 120) {
+                  lifeNote += ` Also, you entered a custom lifespan of ${customVal} years.`;
+              }
+
+              console.log("Life Note:", lifeNote);
+              console.log(`As of today, ${todayStr}, you've lived ${filledWeeks} weeks, about ${weeksLeft} weeks left (~${usedPct}% used).`);
+
+             // layout
+             const columns = 53;
+            const circleR = 6;
+            const shapeSize = circleR * 2;
+
+            const xGap = 15;
+            const xGroupExtra = 5;
+            let yGap = 25;
+            let yGroupExtra = 10;
+
+             const leftMargin = 100;
+            const topMargin = 120;
+            const bottomMargin = 120;
+             
+            // Distances for JPG Export
+              const xGapJPG = xGap * 1.8;
+              const xGroupExtraJPG = xGroupExtra * 1.8;
+
+            // top row markers for these week #s
+            const topMarkers = [1,4,8,12,16,20,24,28,32,36,40,44,48,52];
+
+              // approximate row width
+            const groupCountPerRow = Math.floor(columns / 4);
+              const maxExtraPerRow = groupCountPerRow * xGroupExtra;
+              const rowWidth = (columns * xGap) + maxExtraPerRow;
+            const svgWidth = rowWidth + leftMargin + 100;
+
+            // approximate height
+             const groupCountYears = Math.floor((maxYears - 1) / 5);
+             const totalYearsHeight = (maxYears * yGap) + (groupCountYears * yGroupExtra);
+            const svgHeight = topMargin + totalYearsHeight + bottomMargin;
+
+
+              const svgNS = "http://www.w3.org/2000/svg";
+              const svg = document.createElementNS(svgNS, "svg");
+              svg.setAttribute("id", "lifeWeeksChart"); // Set the ID as per CSS
+              svg.setAttribute("width", svgWidth);
+              svg.setAttribute("height", svgHeight);
+              svg.setAttribute("viewBox", `0 0 ${svgWidth} ${svgHeight}`);
+              svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+              svg.setAttribute("style", "background:#fff;");
+              console.log("SVG Element Created.");
+            
+            // Title
+            const title = document.createElementNS(svgNS, "text");
+              title.setAttribute("text-anchor", "middle");
+              title.setAttribute("x", svgWidth / 2);
+              title.setAttribute("y", 40);
+              title.setAttribute("font-size", "28");
+              title.setAttribute("font-weight", "bold");
+              title.textContent = `${name}'s Life in Weeks`;
+              svg.appendChild(title);
+              console.log("Title Added.");
+
+               // Born text
+              const bornText = document.createElementNS(svgNS, "text");
+              bornText.setAttribute("text-anchor", "middle");
+              bornText.setAttribute("x", svgWidth / 2);
+              bornText.setAttribute("y", 70);
+              bornText.setAttribute("font-size", "16");
+              const bornStr = (dob.getMonth()+1) + "/" + dob.getDate() + "/" + dob.getFullYear();
+              bornText.textContent = `Born: ${bornStr}`;
+              svg.appendChild(bornText);
+              console.log("Born Text Added.");
+
+              // Bottom Text
+              const bottomText = document.createElementNS(svgNS, "text");
+              bottomText.setAttribute("id", "bottomText"); // Assign ID for export adjustments
+              bottomText.setAttribute("text-anchor", "middle");
+              bottomText.setAttribute("x", svgWidth / 2);
+              bottomText.setAttribute("y", svgHeight - 50);
+              bottomText.setAttribute("font-size", "14");
+              
+              let finalText = "";
+               if (customTextCheck) {
+                   finalText = customTextField;
+                }
+                else {
+                  finalText = lifeNote + "\n" +
+                      `As of ${todayStr}, you've lived ${filledWeeks} weeks, about ${weeksLeft} weeks left (~${usedPct}% used).`;
+                }
+
+
+              // Multiline with <tspan>
+                const lines = finalText.split('\n');
+                lines.forEach((line, index) => {
+                  const tspan = document.createElementNS(svgNS, 'tspan');
+                  tspan.setAttribute('x', svgWidth / 2);
+                  tspan.setAttribute('dy', index === 0 ? '0' : '1.2em');
+                  tspan.textContent = line;
+                  bottomText.appendChild(tspan);
+                });
+
+              svg.appendChild(bottomText);
+              console.log("Bottom Text Added.");
+
+
+              // Create groups
+              const yearsGroup = document.createElementNS(svgNS, "g");
+              yearsGroup.setAttribute("id", "yearsGroup");
+              const weekNumbersGroup = document.createElementNS(svgNS, "g");
+              weekNumbersGroup.setAttribute("id", "weekNumbersGroup");
+              const textGroup = document.createElementNS(svgNS, "g");
+              textGroup.setAttribute("id", "textGroup");
+
+              // Create a group for all shapes
+              const shapesGroup = document.createElementNS(svgNS, "g");
+              shapesGroup.setAttribute("id", "shapesGroup"); // Optional: Assign ID for further manipulation
+
+              let yStart = topMargin;
+              let globalWeekIndex = 0;
+              for (let y = 0; y < maxYears; y++) {
+                  // bigger vertical gap after every 5 years
+                  if (y > 0 && (y % 5 === 0)) {
+                      yStart += yGroupExtra;
+                  }
+
+                 const currentYear = birthYear + y;
+                  const realWeekCount = has53Weeks(currentYear) ? 53 : 52;
+
+                   // year label
+                    const yearLabel = document.createElementNS(svgNS, "text");
+                    yearLabel.setAttribute("x", leftMargin - 20);
+                    yearLabel.setAttribute("y", yStart + circleR);
+                    yearLabel.setAttribute("text-anchor", "end");
+                    yearLabel.setAttribute("font-size", "14");
+                     if (y % 5 !== 0) {
+                       yearLabel.setAttribute("fill", "#777");
+                  }
+                   yearLabel.textContent = currentYear;
+                   yearsGroup.appendChild(yearLabel); // Append to the 'yearsGroup'
+                 console.log(`Year Label Added: ${currentYear}`);                  let rowX = leftMargin;
+
+                 for (let w = 0; w < columns; w++) {
+                      // bigger horizontal gap after every 4
+                      if (w > 0 && w % 4 === 0) {
+                          rowX += xGroupExtra;
+                      }
+
+                      // We now draw either a circle, square, or heart
+                      let shapeElem;
+                     if (shapeVal === "circle") {
+                          // create <circle>
+                          shapeElem = document.createElementNS(svgNS, "circle");
+                          shapeElem.setAttribute("cx", rowX);
+                          shapeElem.setAttribute("cy", yStart);
+                         shapeElem.setAttribute("r", circleR);
+                      } else if (shapeVal === "square") {
+                          // create <rect>
+                         shapeElem = document.createElementNS(svgNS, "rect");
+                           shapeElem.setAttribute("x", rowX - circleR);                          shapeElem.setAttribute("y", yStart - circleR);
+                         shapeElem.setAttribute("width",shapeSize);
+                         shapeElem.setAttribute("height", shapeSize);
+                      } else if (shapeVal === "heart") {
+                         // create <path> for heart using the provided path
+                          shapeElem = document.createElementNS(svgNS, "path");
+                          
+                          // Provided heart path
+                          const heartPath = `
+                              M9.66.86C9.11.31,8.38,0,7.6,0s-1.51.3-2.06.85l-.29.29-.29-.29c-.55-.55-1.28-.86-2.06-.86S1.4.3.85.85C.3,1.4,0,2.13,0,2.91,0,3.69.31,4.42.86,4.97l4.18,4.18c.06.06.14.09.21.09s.15-.03.21-.09l4.19-4.18c.55-.55.85-1.28.85-2.06,0-.78-.3-1.51-.85-2.06Z
+                          `;
+
+                          // To position and scale the heart appropriately, apply a transform
+                          // Assume the original path is designed for a 10x10 viewBox
+                           const scaleFactor = 1.2; // Adjust scale as needed
+                          const translateX = rowX;
+                          const translateY = yStart;
+                           const transform = `translate(${translateX - 5}, ${translateY - 5}) scale(${scaleFactor})`;
+
+                         shapeElem.setAttribute("d", heartPath.trim());
+                         shapeElem.setAttribute("transform", transform);
+                     }
+
+                      // Set common attributes for all shapes
+                    if (shapeVal === "circle" || shapeVal === "square") {
+                          // stroke, fill, stroke-width
+                          shapeElem.setAttribute("stroke-width", "1");
+                          shapeElem.setAttribute("fill", "none");
+
+                          // If w < realWeekCount => stroke=black
+                          // else => stroke=white (so invisible if 52-week year)
+                         if (w < realWeekCount) {
+                            shapeElem.setAttribute("stroke", "black");
+                          } else {
+                              // set stroke to "white" to hide the 53rd if only 52 weeks
+                             shapeElem.setAttribute("stroke", "white");
+                        }
+
+                           // fill if w < realWeekCount and globalWeekIndex in range
+                          if (w < realWeekCount) {
+                              const idx = globalWeekIndex;
+                              if (idx >= birthOffset && idx < birthOffset + filledWeeks) {
+                                 shapeElem.setAttribute("fill", "black");
+                                  // Apply life stage coloring here
+                                 if (lifeStageColoring) {
+                                      if (idx < birthOffset + (18 * 52)) {
+                                          shapeElem.setAttribute("fill", "#a6d8f9"); // Young - light blue
+                                      } else if (idx < birthOffset + (25 * 52)) {
+                                          shapeElem.setAttribute("fill", "#f8b1c4"); // Teenage - light pink
+                                      } else if (idx < birthOffset + (65 * 52)) {
+                                          shapeElem.setAttribute("fill", "#ffcc66"); // Adult - light orange
+                                     } else {
+                                          shapeElem.setAttribute("fill", "#999999"); // Old - light grey
+                                     }
+                                 }
+                              }
+                         }
+                    } else if (shapeVal === "heart") {
+                         // For heart, use similar logic for stroke and fill
+                        shapeElem.setAttribute("stroke-width", "1");
+                        shapeElem.setAttribute("fill", "none");
+
+                         if (w < realWeekCount) {
+                            shapeElem.setAttribute("stroke", "black");
+                       } else {
+                            shapeElem.setAttribute("stroke", "white");
+                         }
+
+                         if (w < realWeekCount) {
+                              const idx = globalWeekIndex;
+                              if (idx >= birthOffset && idx < birthOffset + filledWeeks) {
+                                shapeElem.setAttribute("fill", "black");
+                                 // Apply life stage coloring here
+                                 if (lifeStageColoring) {
+                                       if (idx < birthOffset + (18 * 52)) {
+                                          shapeElem.setAttribute("fill", "#a6d8f9"); // Young - light blue
+                                      } else if (idx < birthOffset + (25 * 52)) {
+                                         shapeElem.setAttribute("fill", "#f8b1c4"); // Teenage - light pink
+                                     } else if (idx < birthOffset + (65 * 52)) {
+                                          shapeElem.setAttribute("fill", "#ffcc66"); // Adult - light orange
+                                      } else {
+                                          shapeElem.setAttribute("fill", "#999999"); // Old - light grey
+                                      }
+                                  }
+                              }
+                       }
+                   }
+
+                      // Append shape to the shapes group
+                      shapesGroup.appendChild(shapeElem);
+                      console.log(`Shape Added: ${shapeVal} at (${rowX}, ${yStart})`);
+                    
+
+                      // top row markers
+                    if (y === 0) {
+                        if (topMarkers.includes(w+1)) {
+                           const marker = document.createElementNS(svgNS, "text");
+                            marker.setAttribute("x", rowX);
+                            // place above shape
+                           if (shapeVal === "circle" || shapeVal === "heart") {
+                                marker.setAttribute("y", yStart - 10);
+                           } else {
+                                 marker.setAttribute("y", yStart - (circleR + 4));
+                            }
+                             marker.setAttribute("text-anchor", "middle");
+                            marker.setAttribute("font-size", "12");
+                             marker.textContent = (w+1);
+                           weekNumbersGroup.appendChild(marker);
+                            console.log(`Marker Added: Week ${w+1}`);
+                       }
+                     }
+                   rowX += xGap;
+
+                      // increment globalWeekIndex if w < realWeekCount
+                      if (w < realWeekCount) {
+                        globalWeekIndex++;
+                      }
+                  }
+                 yStart += yGap;
+              }
+            
+             // Append the shapes group to the SVG
+              svg.appendChild(shapesGroup);
+              console.log("Shapes Group Appended to SVG.");
+            // Append the groups
+            svg.appendChild(yearsGroup);
+            svg.appendChild(weekNumbersGroup);
+            svg.appendChild(textGroup);
+            textGroup.appendChild(bottomText);
+              console.log("Text Group Appended to SVG.");
+
+
+            // Clear previous chart and append the new one
+              chartDiv.innerHTML = "";
+              chartDiv.appendChild(svg);
+              console.log("SVG Chart Appended to DOM.");
+
+              // Show success notification
+              showNotification("Chart was generated successfully!");
+
+              // Tooltip functionality (Optional)
+              const tooltip = document.getElementById('tooltip');
+              const shapes = shapesGroup.querySelectorAll('circle, rect, path');
+
+              shapes.forEach((shape, index) => {
+                  shape.setAttribute('data-week', index + 1); // Assign week number
+                  shape.addEventListener('mouseover', (e) => {
+                      tooltip.style.left = (e.pageX + 10) + 'px'; // Offset tooltip position
+                      tooltip.style.top = (e.pageY + 10) + 'px';
+                      tooltip.textContent = `Week ${index + 1}`;
+                      tooltip.style.opacity = 1;
+                  });
+
+                  shape.addEventListener('mouseout', () => {
+                      tooltip.style.opacity = 0;
+                  });
+             });
+              console.log("Tooltip Functionality Initialized.");
+
+
+          } catch (error) {
+              alert("An error occurred while generating the SVG.");
+              console.error("Generate SVG Error:", error);
+              showNotification("An error occurred while generating the chart.", "error");
+          }
+      }
+
+       /***************************************************************
+        * Helper Function to Double Only X Coordinates in Transform
+        ***************************************************************/
+      function doubleTranslateX(transform, scaleX) {
+          // Match 'translate(x, y)' or 'translate(x y)'
+          const translateRegex = /translate\(\s*([-+]?\d*\.?\d+)(?:\s*,\s*|\s+)([-+]?\d*\.?\d+)\s*\)/;
+          const match = transform.match(translateRegex);
+          if (match) {
+              const x = parseFloat(match[1]);
+              const y = parseFloat(match[2]);
+              const newX = x * scaleX;
+              // Replace the translate(x,y) with translate(newX, y)
+              return transform.replace(translateRegex, `translate(${newX}, ${y})`);
+          }
+          return transform; // No change if no translate found
+      }
+
+       /***************************************************************
+       * doubleTranslateY
+       ***************************************************************/
+      function doubleTranslateY(transform, scaleY) {
+           const translateRegex = /translate\(\s*([-+]?\d*\.?\d+)(?:\s*,\s*|\s+)([-+]?\d*\.?\d+)\s*\)/;
+          const match = transform.match(translateRegex);
+          if (match) {
+              const x = parseFloat(match[1]);
+              const y = parseFloat(match[2]);
+              const newY = y * scaleY;
+              // Replace the translate(x,y) with translate(x, newY)
+              return transform.replace(translateRegex, `translate(${x}, ${newY})`);
+           }
+           return transform; // No change if no translate found
+        }
+        /***************************************************************
+         * exportToJpg
+         ***************************************************************/
+    function exportToJpg(format) {
+        const chartDiv = document.getElementById('chartContainer');
+        const svgElement = chartDiv.querySelector('svg');
+
+        if (!svgElement) {
+             alert("Please generate the chart first.");
+             showNotification("Please generate the chart before exporting.", "error");
+            return;
+        }
+
+       // Define print formats with scaling for x and y distances
+       const printFormats = {
+            '11x17': { width: 11, height: 17, dpi: 300, scaleX: 1.8, scaleY: 1.2 },
+            '18x24': { width: 18, height: 24, dpi: 300, scaleX: 2.0, scaleY: 1.2 },
+            '24x36': { width: 24, height: 36, dpi: 300, scaleX: 2.2, scaleY: 1.5 },
+            '27x40': { width: 27, height: 40, dpi: 300, scaleX: 2.4, scaleY: 1.6 },
+        };
+
+
+        const selectedFormat = printFormats[format];
+            if (!selectedFormat) {
+            alert("Invalid Print format selected.");
+            showNotification("Invalid Print format selected.", "error");
+            return;
+        }
+
+          const widthInches = selectedFormat.width;
+          const heightInches = selectedFormat.height;
+          const dpi = selectedFormat.dpi;
+          const widthPx = Math.round(widthInches * dpi);
+        const heightPx = Math.round(heightInches * dpi);
+          const scaleX = selectedFormat.scaleX;
+        const scaleY = selectedFormat.scaleY;
+
+
+         // Clone the SVG element to prevent modifications on the original
+        const exportSvg = svgElement.cloneNode(true);
+
+         // Function to double x and y attributes
+          function scaleCoordinates(svgElement, scaleX, scaleY) {
+                // Adjust 'cx' for circles
+             const circles = svgElement.querySelectorAll('circle');
+           circles.forEach(circle => {
+                const cx = parseFloat(circle.getAttribute('cx'));
+               const cy = parseFloat(circle.getAttribute('cy'));
+               if (!isNaN(cx)) {
+                   circle.setAttribute('cx', cx * scaleX);
+               }
+               if (!isNaN(cy)) {
+                   circle.setAttribute('cy', cy * scaleY);
+                }
+            });
+
+           // Adjust 'x' and 'y' for rects
+            const rects = svgElement.querySelectorAll('rect');
+           rects.forEach(rect => {
+                const x = parseFloat(rect.getAttribute('x'));
+               const y = parseFloat(rect.getAttribute('y'));
+                 if (!isNaN(x)) {
+                   rect.setAttribute('x', x * scaleX);
+                 }
+               if (!isNaN(y)) {
+                   rect.setAttribute('y', y * scaleY);
+               }
+            });
+
+            // Adjust 'transform' for paths (hearts only, since star is removed)
+            const paths = svgElement.querySelectorAll('path');
+            paths.forEach(path => {
+               const transform = path.getAttribute('transform');
+                if (transform) {
+                  let newTransform = doubleTranslateX(transform, scaleX);
+                   newTransform = doubleTranslateY(newTransform, scaleY);
+                   path.setAttribute('transform', newTransform);
+                }
+            });
+
+           // Adjust 'x' and 'y' for text elements
+          const texts = svgElement.querySelectorAll('text');
+            texts.forEach(text => {
+                 if (text.hasAttribute('x')) {
+                   const x = parseFloat(text.getAttribute('x'));
+                    if (!isNaN(x)) {
+                        text.setAttribute('x', x * scaleX);
+                    }
+                }
+                 if (text.hasAttribute('y')) {
+                    const y = parseFloat(text.getAttribute('y'));
+                     if (!isNaN(y)) {
+                        text.setAttribute('y', y * scaleY);
+                    }
+               }
+           });
+          }
+
+         // Apply the scaling to the cloned SVG
+        scaleCoordinates(exportSvg, scaleX, scaleY);
+         console.log("Horizontal and vertical spacing adjusted for export to JPG.");
+
+        // Adjust the canvas width accordingly
+          const originalWidth = parseFloat(exportSvg.getAttribute('width'));
+        const originalHeight = parseFloat(exportSvg.getAttribute('height'));
+           const newWidth = originalWidth * scaleX;
+          const newHeight = originalHeight * scaleY;
+          exportSvg.setAttribute('width', newWidth);
+         exportSvg.setAttribute('height', newHeight);
+         exportSvg.setAttribute('viewBox', `0 0 ${newWidth} ${newHeight}`);
+         console.log(`SVG width adjusted for JPG from ${originalWidth} to ${newWidth}.`);
+
+        // Now set the bottomText's x to newWidth / 2, and y to newHeight-50;
+         const exportBottomText = exportSvg.querySelector("#bottomText");
+        if (exportBottomText) {
+            exportBottomText.setAttribute("x", newWidth / 2);
+            exportBottomText.setAttribute("y", newHeight - 50);
+           const tspans = exportBottomText.querySelectorAll("tspan");
+           tspans.forEach(tspan => {
+                 tspan.setAttribute("x", newWidth / 2);
+          });
+            console.log("Bottom text position adjusted for export to JPG.");
+        }
+
+
+        // Serialize the modified SVG
+          const serializer = new XMLSerializer();
+         const svgString = serializer.serializeToString(exportSvg);
+
+        const canvas = document.createElement('canvas');
+         const ctx = canvas.getContext('2d');
+
+       // Set the canvas dimensions and DPI
+        canvas.width = widthPx;
+        canvas.height = heightPx;
+
+          // Create an image
+        const img = new Image();
+          img.onload = () => {
+              ctx.drawImage(img, 0, 0, widthPx, heightPx);
+
+              // Convert the canvas to a data URL
+              const dataURL = canvas.toDataURL('image/jpeg', 0.9);
+
+              // Create a temporary link to trigger the download
+              const link = document.createElement('a');
+             link.href = dataURL;
+              link.download = `MyLifeInWeeks_Exported_${format}.jpg`;
+             document.body.appendChild(link);
+           link.click();
+              document.body.removeChild(link);
+
+            showNotification("Chart was exported to JPG successfully!");
+         };
+
+          img.onerror = () => {
+              alert("An error occurred while loading the image.");
+           showNotification("An error occurred while loading the image.", "error");
+        };
+
+          img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgString);
+    }
+      /***************************************************************
+       * exportSvg
+       ***************************************************************/
+      function exportSvg() {
+          const chartDiv = document.getElementById("chartContainer");
+          const originalSvg = chartDiv.querySelector("svg");
+          if (!originalSvg) {
+              alert("Please generate the chart first.");
+              showNotification("Please generate the chart before exporting.", "error");
+              return;
+          }
+
+          try {
+              // Clone the original SVG to modify for export
+              const exportSvg = originalSvg.cloneNode(true);
+
+              // Function to double x attributes without affecting y
+              function scaleCoordinates(svgElement, scaleX, scaleY) {
+                    // Adjust 'cx' for circles
+                 const circles = svgElement.querySelectorAll('circle');
+               circles.forEach(circle => {
+                    const cx = parseFloat(circle.getAttribute('cx'));
+                   const cy = parseFloat(circle.getAttribute('cy'));
+                   if (!isNaN(cx)) {
+                       circle.setAttribute('cx', cx * scaleX);
+                   }
+                   if (!isNaN(cy)) {
+                       circle.setAttribute('cy', cy * scaleY);
+                    }
+                });
+
+               // Adjust 'x' and 'y' for rects
+                const rects = svgElement.querySelectorAll('rect');
+               rects.forEach(rect => {
+                    const x = parseFloat(rect.getAttribute('x'));
+                   const y = parseFloat(rect.getAttribute('y'));
+                     if (!isNaN(x)) {
+                       rect.setAttribute('x', x * scaleX);
+                     }
+                   if (!isNaN(y)) {
+                       rect.setAttribute('y', y * scaleY);
+                   }
+                });
+
+                // Adjust 'transform' for paths (hearts only, since star is removed)
+                const paths = svgElement.querySelectorAll('path');
+                paths.forEach(path => {
+                   const transform = path.getAttribute('transform');
+                    if (transform) {
+                      let newTransform = doubleTranslateX(transform, scaleX);
+                       newTransform = doubleTranslateY(newTransform, scaleY);
+                       path.setAttribute('transform', newTransform);
+                    }
+                });
+
+               // Adjust 'x' and 'y' for text elements
+              const texts = svgElement.querySelectorAll('text');
+                texts.forEach(text => {
+                     if (text.hasAttribute('x')) {
+                       const x = parseFloat(text.getAttribute('x'));
+                        if (!isNaN(x)) {
+                            text.setAttribute('x', x * scaleX);
+                        }
+                    }
+                     if (text.hasAttribute('y')) {
+                        const y = parseFloat(text.getAttribute('y'));
+                         if (!isNaN(y)) {
+                            text.setAttribute('y', y * scaleY);
+                        }
+                   }
+               });
+              }
+              const scaleX = 2;
+              const scaleY = 2;
+              // Apply doubling to the cloned SVG
+              scaleCoordinates(exportSvg, scaleX, scaleY);
+              console.log("Horizontal and vertical spacing doubled for export.");
+
+              // Adjust the canvas width accordingly
+              const originalWidth = parseFloat(exportSvg.getAttribute('width'));
+              const originalHeight = parseFloat(exportSvg.getAttribute('height'));
+              const newWidth = originalWidth * scaleX;
+              const newHeight = originalHeight * scaleY;
+              exportSvg.setAttribute('width', newWidth);
+              exportSvg.setAttribute('height', newHeight);
+              exportSvg.setAttribute('viewBox', `0 0 ${newWidth} ${newHeight}`);
+              console.log(`SVG width adjusted from ${originalWidth} to ${newWidth}.`);
+
+             // Now set the bottomText's x to newWidth / 2, and y to newHeight -50;
+              const exportBottomText = exportSvg.querySelector("#bottomText");
+             if (exportBottomText) {
+                  exportBottomText.setAttribute("x", newWidth / 2);
+                exportBottomText.setAttribute("y", newHeight - 50);
+                 const tspans = exportBottomText.querySelectorAll("tspan");
+                 tspans.forEach(tspan => {
+                   tspan.setAttribute("x", newWidth / 2);
+                  });
+                  console.log("Bottom text position adjusted for export.");
+              }
+
+
+              // Serialize the modified SVG
+              const serializer = new XMLSerializer();
+              const svgString = serializer.serializeToString(exportSvg);
+
+              // Create a Blob from the SVG string
+              const blob = new Blob([svgString], { type: "image/svg+xml" });
+              const url = URL.createObjectURL(blob);
+
+              // Create a temporary link to trigger the download
+              const link = document.createElement("a");
+              link.href = url;
+              link.download = "MyLifeInWeeks_Exported.svg";
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+              URL.revokeObjectURL(url);
+              console.log("SVG exported successfully.");
+
+              // Show success notification
+              showNotification("Chart was exported successfully!");
+          } catch (error) {
+              alert("An error occurred while exporting the SVG.");
+              console.error("Export SVG Error:", error);
+              showNotification("An error occurred while exporting the chart.", "error");
+          }
+      }
+
+      // Event listeners
+    document.getElementById("lifeWeeksForm").addEventListener("submit", generateSvgChart);
+
+   const exportJpgButton = document.getElementById('exportJpgButton');
+    exportJpgButton.addEventListener('click', () => {
+            const modal = document.getElementById('exportModal');
+             modal.style.display = 'block';
+    });
+
+
+        // Handle modal close
+      const closeButton = document.querySelector('#exportModal .close');
+        closeButton.addEventListener('click', () => {
+            document.getElementById('exportModal').style.display = 'none';
+        });
+        
+      const modalCancelButton = document.getElementById('modalCancelButton');
+        modalCancelButton.addEventListener('click', () => {
+            document.getElementById('exportModal').style.display = 'none';
+        });
+
+      const modalExportButton = document.getElementById('modalExportButton');
+      modalExportButton.addEventListener('click', () => {
+         const format = document.getElementById('printFormat').value;
+         exportToJpg(format);
+         document.getElementById('exportModal').style.display = 'none';
+      });
+      
+      // Custom Day Checkbox
+        const customDayCheck = document.getElementById("customDayCheck");
+        const customDayField = document.getElementById("customDayField");
+        customDayCheck.addEventListener("change", function() {
+          customDayField.style.visibility = this.checked ? "visible" : "hidden";
+        });
+
+       // Custom Text Checkbox
+       const customTextCheck = document.getElementById("customTextCheck");
+       const customTextInputGroup = document.getElementById("customTextInputGroup");
+          customTextCheck.addEventListener("change", function() {
+              customTextInputGroup.style.display = this.checked ? "flex" : "none";
+             if(this.checked){
+                 document.getElementById("customTextError").textContent = "";
+                 customTextField.dispatchEvent(new Event('input'));
+             }
+
+          });
+
+          const customTextField = document.getElementById("customTextField");
+        const customTextCount = document.getElementById("customTextCount");
+
+        customTextField.addEventListener('input', function() {
+           const maxLength = parseInt(this.getAttribute('maxlength'), 10);
+           customTextCount.textContent = `${this.value.length}/${maxLength} characters`;
+             if(this.value.length > maxLength){
+                customTextCount.classList.add("error-message");
+                  document.getElementById("customTextError").textContent = "Custom text must be 225 characters or less.";
+              } else {
+                customTextCount.classList.remove("error-message");
+                  document.getElementById("customTextError").textContent = "";
+              }
+        });
+
+         // Export SVG on export button click
+         const exportSvgButton = document.getElementById('exportSvgButton');
+          exportSvgButton.addEventListener('click', exportSvg);
+
+           // Date of birth max date
+         document.addEventListener('DOMContentLoaded', function() {
+             const dobField = document.getElementById('dobField');
+                const today = new Date();
+                const todayStr = today.toISOString().split('T')[0];
+                dobField.setAttribute('max', todayStr);
+           });
+    </script>
+
+</body>
+</html>
